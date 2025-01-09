@@ -1,0 +1,55 @@
+diff --git a/node_modules/@mdxeditor/editor/dist/importMarkdownToLexical.js b/node_modules/@mdxeditor/editor/dist/importMarkdownToLexical.js
+index 803d77e..a414315 100644
+--- a/node_modules/@mdxeditor/editor/dist/importMarkdownToLexical.js
++++ b/node_modules/@mdxeditor/editor/dist/importMarkdownToLexical.js
+@@ -26,6 +26,8 @@ function importMarkdownToLexical({
+ }) {
+   var _a;
+   let mdastRoot;
++  if (markdown == null)
++    return;
+   try {
+     mdastRoot = fromMarkdown(markdown, {
+       extensions: syntaxExtensions,
+diff --git a/node_modules/@mdxeditor/editor/dist/index.d.ts b/node_modules/@mdxeditor/editor/dist/index.d.ts
+index 25e1f44..11e6d87 100644
+--- a/node_modules/@mdxeditor/editor/dist/index.d.ts
++++ b/node_modules/@mdxeditor/editor/dist/index.d.ts
+@@ -2077,7 +2077,7 @@ export declare interface MDXEditorProps {
+      * The markdown to edit. Notice that this is read only when the component is mounted.
+      * To change the component content dynamically, use the `MDXEditorMethods.setMarkdown` method.
+      */
+-    markdown: string;
++    markdown?: string;
+     /**
+      * Triggered when the editor value changes. The callback is not throttled, you can use any throttling mechanism
+      * if you intend to do auto-saving.
+diff --git a/node_modules/@mdxeditor/editor/dist/plugins/core/index.js b/node_modules/@mdxeditor/editor/dist/plugins/core/index.js
+index a781a82..6fcf840 100644
+--- a/node_modules/@mdxeditor/editor/dist/plugins/core/index.js
++++ b/node_modules/@mdxeditor/editor/dist/plugins/core/index.js
+@@ -478,12 +478,12 @@ const translation$ = Cell(() => {
+ const lexicalTheme$ = Cell(lexicalTheme);
+ const corePlugin = realmPlugin({
+   init(r, params) {
+-    const initialMarkdown = (params == null ? void 0 : params.initialMarkdown) ?? "";
++    const initialMarkdown = (params == null ? void 0 : params.initialMarkdown) ?? null;
+     r.register(createRootEditorSubscription$);
+     r.register(createActiveEditorSubscription$);
+     r.register(markdownSignal$);
+     r.pubIn({
+-      [initialMarkdown$]: (params == null ? void 0 : params.trim) ? initialMarkdown.trim() : initialMarkdown,
++      [initialMarkdown$]: (initialMarkdown == null ? void 0 : initialMarkdown.trim) ? initialMarkdown.trim() : initialMarkdown,
+       [iconComponentFor$]: params == null ? void 0 : params.iconComponentFor,
+       [addImportVisitor$]: [MdastRootVisitor, MdastParagraphVisitor, MdastTextVisitor, MdastBreakVisitor, ...formattingVisitors],
+       [addLexicalNode$]: [ParagraphNode, TextNode, GenericHTMLNode],
+@@ -529,7 +529,8 @@ const corePlugin = realmPlugin({
+       theme: r.getValue(lexicalTheme$)
+     });
+     newEditor.update(() => {
+-      const markdown = (params == null ? void 0 : params.initialMarkdown.trim()) ?? "";
++      const initialMarkdown = (params == null ? void 0 : params.initialMarkdown) ?? null;
++      const markdown = (initialMarkdown == null ? void 0 : initialMarkdown.trim) ? initialMarkdown.trim() : initialMarkdown;
+       tryImportingMarkdown(r, $getRoot(), markdown);
+       const autoFocusValue = params == null ? void 0 : params.autoFocus;
+       if (autoFocusValue) {
