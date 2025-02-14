@@ -16,8 +16,10 @@ import {
   ListsToggle,
   markdownShortcutPlugin,
   MDXEditor,
+  MDXEditorMethods,
   quotePlugin,
   Separator,
+  StrikeThroughSupSubToggles,
   tablePlugin,
   thematicBreakPlugin,
   toolbarPlugin,
@@ -30,7 +32,7 @@ import { collaborationPlugin } from './plugins/CollaborationPlugin';
 import inlineCopilotPlugin from './plugins/inline-copilot';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const defaultCopiotService = (context: string) => {
+const defaultCopilotService = (context: string) => {
   return Promise.resolve('mock sugestion content');
 };
 
@@ -42,6 +44,9 @@ const CustomerToolbar: React.FC = () => {
       <Separator />
       <BoldItalicUnderlineToggles />
       <CodeToggle />
+
+      <Separator />
+      <StrikeThroughSupSubToggles options={['Strikethrough']} />
 
       <Separator />
       <ListsToggle options={['bullet', 'number']} />
@@ -58,6 +63,8 @@ const CustomerToolbar: React.FC = () => {
     </>
   );
 };
+
+(window as any).ref = React.createRef<MDXEditorMethods>();
 
 function App() {
   const plugins = [
@@ -78,14 +85,15 @@ function App() {
       },
     }),
     markdownShortcutPlugin(),
-    collaborationPlugin({ id: 'room/initialize' }),
-    inlineCopilotPlugin({ service: defaultCopiotService }),
+    collaborationPlugin({ id: '2/aaa' }),
+    inlineCopilotPlugin({ service: defaultCopilotService }),
   ];
 
   return (
     <div className="h-screen w-screen p-4 bg-gray-50">
       <div className="max-w-4xl mx-auto h-full">
         <MDXEditor
+          ref={(window as any).ref}
           contentEditableClassName="prose"
           plugins={plugins}
         ></MDXEditor>
@@ -97,4 +105,5 @@ function App() {
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(<App />);
