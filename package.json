@@ -12,7 +12,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "server:ws": "cross-env HOST=localhost PORT=1234 YPERSISTENCE=./yjs-wss-db npx y-websocket",
     "prepare": "husky",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "patch-package": "npx patch-package @mdxeditor/editor"
   },
   "keywords": [],
   "author": "",
